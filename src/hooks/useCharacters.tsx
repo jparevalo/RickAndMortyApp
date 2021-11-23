@@ -3,32 +3,29 @@ import { characterList } from '../api/characterDB';
 import { Character, CharacterListResponse } from '../interfaces/characterInterface';
 
 interface CharacterState {
-  characterList: Character[];
-  rickList: Character[],
-  mortyList: Character[]
+  characters: Character[];
+  nextCharacterPage: string;
 }
 
 export const useCharacters = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingCharacters, setIsLoadingCharacters] = useState(true);
   const [characterState, setCharacterState] = useState<CharacterState>({
-    characterList: [],
-    rickList: [],
-    mortyList: []
+    characters: [],
+    nextCharacterPage: "2"
   });
+  const [currentCharacterPage, setCurrentCharacterPage] = useState("1");
   
   const getCharacters = async () => {
     try {
-      const characterListPromise = await characterList({}).get<CharacterListResponse>('/character');
-      const rickListPromise = await characterList({filter: 'rick'}).get<CharacterListResponse>('/character');
-      const mortyListPromise = await characterList({filter: 'morty'}).get<CharacterListResponse>('/character');
+      const characterListPromise = await characterList({page: currentCharacterPage}).get<CharacterListResponse>('/character');
   
-      const response = await Promise.all([characterListPromise, rickListPromise, mortyListPromise]);
+      const response = await Promise.all([characterListPromise]);
+      const nextPage = response[0].data.info.next
       setCharacterState({
-        characterList: response[0].data.results,
-        rickList: response[1].data.results,
-        mortyList: response[2].data.results,
+        characters: [...characterState.characters, ...response[0].data.results],
+        nextCharacterPage: nextPage ? nextPage.split('page=')[1] : nextPage
       });
-      setIsLoading(false);
+      setIsLoadingCharacters(false);
 
     } catch (error) {
       console.log(error);
@@ -39,8 +36,14 @@ export const useCharacters = () => {
     getCharacters();
   }, [])
 
+  // useEffect
+  useEffect( () => {
+    getCharacters();
+  }, [currentCharacterPage])
+
   return {
-    isLoading,
-    ...characterState
+    isLoadingCharacters,
+    ...characterState,
+    setCurrentCharacterPage
   }
 }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 interface listProps {
-    page?: number,
+    page?: string,
     filter?: string,
 }
 
-export const characterList = ({ page = 2, filter = "" }: listProps) => {
+export const characterList = ({ page = "1", filter = "" }: listProps) => {
     return axios.create({
         baseURL: 'https://rickandmortyapi.com/api/',
         params: {

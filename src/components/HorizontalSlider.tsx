@@ -6,8 +6,9 @@ import CharacterCard from './CharacterCard';
 interface Props {
   title?: string;
   characters: Character[];
+  nextPageFunction: Function;
 }
-const HorizontalSlider = ({ title, characters }: Props ) => {
+const HorizontalSlider = ({ title, characters, nextPageFunction }: Props ) => {
   
   return (
     <View style={{ height: (title)? 260: 230}} >
@@ -18,9 +19,11 @@ const HorizontalSlider = ({ title, characters }: Props ) => {
       <FlatList 
         data={characters}
         renderItem={({ item }) => (<CharacterCard character={item} width={140} height={200}/>)}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()+'_'+title}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
+        onEndReached={() => nextPageFunction()}
+        onEndReachedThreshold={1}
       />
     </View>
   )

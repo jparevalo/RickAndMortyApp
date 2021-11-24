@@ -36,6 +36,10 @@ export const useCharacters = () => {
 
     } catch (error) {
       console.log(error);
+      setCharacterState({
+        characters: [],
+        nextCharacterPage: ""
+      });
     }
   }
   // useEffect

@@ -23,9 +23,6 @@ const HomeScreen = () => {
     setSearchInput(val);
     setFilter(val);
   }
-  const handleSearchSubmit = () => {
-    setFilter(searchInput);
-  }
 
   const _handleLoadMoreCharacters = () => {
     if(nextCharacterPage){
@@ -69,7 +66,6 @@ const HomeScreen = () => {
         <View style={{ height: 500 }}>
           <Text style={styles.titulo}>All Characters</Text>
           <SearchInput 
-            onSubmit={handleSearchSubmit}
             onChange={handleSearchChange}
             value={searchInput}
           />

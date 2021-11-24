@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
-const SearchInput = ({ onChange, onSubmit, value } : {onChange: any, onSubmit: any, value: string}) => {
+const SearchInput = ({ onChange, value } : {onChange: any, value: string}) => {
   return (
    <TextInput
       placeholder="Search"
-      onSubmitEditing={onSubmit} 
       onChangeText={onChange}
       value={value}
       style={styles.input}

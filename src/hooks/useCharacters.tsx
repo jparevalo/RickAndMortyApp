@@ -14,16 +14,23 @@ export const useCharacters = () => {
     nextCharacterPage: "2"
   });
   const [currentCharacterPage, setCurrentCharacterPage] = useState("1");
+  const [filter, setFilter] = useState('');
   
-  const getCharacters = async () => {
+  const getCharacters = async (clear = false) => {
     try {
-      const characterListPromise = await characterList({page: currentCharacterPage}).get<CharacterListResponse>('/character');
+      const characterListPromise = await characterList({page: currentCharacterPage, filter: filter}).get<CharacterListResponse>('/character');
   
       const response = await Promise.all([characterListPromise]);
-      const nextPage = response[0].data.info.next
+      const nextPage = response[0].data.info.next;
+
+      let characterResults = response[0].data.results;
+      if (!clear){
+        characterResults = [...characterState.characters, ...characterResults]
+      }
+
       setCharacterState({
-        characters: [...characterState.characters, ...response[0].data.results],
-        nextCharacterPage: nextPage ? nextPage.split('page=')[1] : nextPage
+        characters: characterResults,
+        nextCharacterPage: nextPage ? nextPage.split('page=')[1].split('&')[0] : nextPage
       });
       setIsLoadingCharacters(false);
 
@@ -36,14 +43,19 @@ export const useCharacters = () => {
     getCharacters();
   }, [])
 
-  // useEffect
   useEffect( () => {
     getCharacters();
-  }, [currentCharacterPage])
+  }, [currentCharacterPage, filter])
+
+  useEffect( () => {
+    setCurrentCharacterPage("1");
+    getCharacters(true);
+  }, [filter])
 
   return {
     isLoadingCharacters,
     ...characterState,
-    setCurrentCharacterPage
+    setCurrentCharacterPage,
+    setFilter
   }
 }

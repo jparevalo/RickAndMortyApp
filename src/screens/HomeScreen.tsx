@@ -1,5 +1,5 @@
-import React from 'react';
-import { ActivityIndicator, StyleSheet, View, ScrollView, Dimensions, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View, ScrollView, Dimensions, Text, TextInput } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCharacters } from '../hooks/useCharacters';
@@ -7,14 +7,25 @@ import { useRicks } from '../hooks/useRicks';
 import { useMortys } from '../hooks/useMortys';
 import CharacterCard from '../components/CharacterCard';
 import HorizontalSlider from '../components/HorizontalSlider';
+import SearchInput from '../components/SearchInput';
 
 const { width: windowWidth } = Dimensions.get('window');
 
 const HomeScreen = () => {
 
-  const {characters, nextCharacterPage, isLoadingCharacters, setCurrentCharacterPage} = useCharacters();
+  const {characters, nextCharacterPage, isLoadingCharacters, setCurrentCharacterPage, setFilter} = useCharacters();
   const {ricks, nextRickPage, isLoadingRicks, setCurrentRickPage} = useRicks();
   const {mortys, nextMortyPage, isLoadingMortys, setCurrentMortyPage} = useMortys();
+  const [searchInput, setSearchInput] = useState('');
+
+  const handleSearchChange = (val : string) => {
+    console.log(val);
+    setSearchInput(val);
+    setFilter(val);
+  }
+  const handleSearchSubmit = () => {
+    setFilter(searchInput);
+  }
 
   const _handleLoadMoreCharacters = () => {
     if(nextCharacterPage){
@@ -33,6 +44,10 @@ const HomeScreen = () => {
       setCurrentMortyPage(nextMortyPage);
     }
   };
+
+  useEffect( () => {
+    setFilter(searchInput);
+  }, [searchInput])
   
   const { top }  =  useSafeAreaInsets(); // para ios y android
   if(isLoadingCharacters || isLoadingMortys || isLoadingRicks) {
@@ -53,6 +68,11 @@ const HomeScreen = () => {
         {/* All Characters */}
         <View style={{ height: 500 }}>
           <Text style={styles.titulo}>All Characters</Text>
+          <SearchInput 
+            onSubmit={handleSearchSubmit}
+            onChange={handleSearchChange}
+            value={searchInput}
+          />
           <Carousel 
             data={characters}
             renderItem={({ item }: any) => <CharacterCard character={item}/>}

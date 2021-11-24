@@ -49,7 +49,7 @@ export const useCharacters = () => {
 
   useEffect( () => {
     getCharacters();
-  }, [currentCharacterPage, filter])
+  }, [currentCharacterPage])
 
   useEffect( () => {
     setCurrentCharacterPage("1");

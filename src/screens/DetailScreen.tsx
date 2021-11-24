@@ -12,7 +12,6 @@ interface Props extends StackScreenProps<RootStackParams, 'DetailScreen'>{
 
 }
 const DetailScreen = ({ route, navigation}: Props) => {
-  // console.log(route.params)
   const selectedCharacter = route.params;
   const uri = selectedCharacter.image;
 

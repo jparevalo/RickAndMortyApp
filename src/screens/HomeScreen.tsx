@@ -19,7 +19,6 @@ const HomeScreen = () => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleSearchChange = (val : string) => {
-    console.log(val);
     setSearchInput(val);
     setFilter(val);
   }
